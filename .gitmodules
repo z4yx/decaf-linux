@@ -1,0 +1,4 @@
+[submodule "libdecaf"]
+	path = libdecaf
+	url = git@git.net9.org:shanker/libdecaf.git
+	branch = for-linux

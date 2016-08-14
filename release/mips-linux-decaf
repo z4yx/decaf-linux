@@ -1,0 +1,15 @@
+#!/bin/bash
+TARGET=mipsel-unknown-linux-gnu-
+AS=${TARGET}as
+GCC=${TARGET}gcc
+LD=${TARGET}ld
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DECAF="java -jar \"${BASEDIR}/decaf.jar\""   
+if [[ "x$1" == x || "x$2" == x ]]; then
+    echo "Usage: $0 <source.decaf> <output>"
+    exit
+fi
+
+eval ${DECAF} $1 | ${AS} -EL -g -mips32 -o .tmp.o
+${GCC} -s -static -Os -L"$BASEDIR" -o $2 .tmp.o -ldecaf
+rm .tmp.o || true
