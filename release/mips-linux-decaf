@@ -3,6 +3,7 @@ TARGET=mipsel-unknown-linux-gnu-
 AS=${TARGET}as
 GCC=${TARGET}gcc
 LD=${TARGET}ld
+STRIP=${TARGET}strip
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DECAF="java -jar \"${BASEDIR}/decaf.jar\""   
 if [[ "x$1" == x || "x$2" == x ]]; then
@@ -10,6 +11,7 @@ if [[ "x$1" == x || "x$2" == x ]]; then
     exit
 fi
 
-eval ${DECAF} $1 | ${AS} -EL -g -mips32 -o .tmp.o
-${GCC} -s -static -Os -L"$BASEDIR" -o $2 .tmp.o -ldecaf
+eval ${DECAF} "'$1'" | ${AS} -EL -g -mips32 -o .tmp.o
+${GCC} -s -static -fdata-sections -ffunction-sections -Wl,--gc-sections -Os -L"$BASEDIR" -o "$2" .tmp.o -ldecaf
+${STRIP} "$2"
 rm .tmp.o || true
